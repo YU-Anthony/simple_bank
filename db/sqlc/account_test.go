@@ -1,13 +1,15 @@
 package db
 
 import (
+	// "SIMPLE_BANK/util"
 	"context"
+	"database/sql"
+	"log"
 	"testing"
 	"time"
 
-	"github.com/techschool/simplebank/util"
-
 	"github.com/stretchr/testify/require"
+	"github.com/techschool/simple/util"
 )
 
 func createRandomAccount(t *testing.T) Account {
@@ -38,7 +40,13 @@ func TestCreateAccount(t *testing.T) {
 func TestGetAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	require.NoError(t, err)
+	require.NotEmpty(t, account2)
 
 	require.Equal(t, account1.ID, account2.ID)
 	require.Equal(t, account1.Owner, account2.Owner)
@@ -68,23 +76,24 @@ func TestUpdateAccount(t *testing.T) {
 
 func TestDeleteAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
+
 	err := testQueries.DeleteAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
 	require.Error(t, err)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, account2)
 }
 
 func TestListAccounts(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		createRandomAccount(t)
-
 	}
 
 	arg := ListAccountsParams{
 		Limit:  5,
-		Offset: 0,
+		Offset: 5,
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), arg)
@@ -94,4 +103,18 @@ func TestListAccounts(t *testing.T) {
 	for _, account := range accounts {
 		require.NotEmpty(t, account)
 	}
+}
+
+func TestAddAccountBalance(t *testing.T) {
+	account1 := createRandomAccount(t)
+	oldBalance := account1.Balance
+
+	arg := AddAccountBalanceParams{
+		Amount: util.RandomMoney(),
+		ID:     account1.ID,
+	}
+
+	updatedAccount, err := testQueries.AddAccountBalance(context.Background(), arg)
+	require.NoError(t, err)
+	require.Equal(t, oldBalance+arg.Amount, updatedAccount.Balance)
 }
