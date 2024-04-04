@@ -1,15 +1,15 @@
 package db
 
 import (
-	// "SIMPLE_BANK/util"
 	"context"
 	"database/sql"
 	"log"
 	"testing"
 	"time"
 
+	"simple_bank/util"
+
 	"github.com/stretchr/testify/require"
-	"github.com/techschool/simple/util"
 )
 
 func createRandomAccount(t *testing.T) Account {

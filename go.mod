@@ -1,11 +1,10 @@
-module github.com/techschool/simple
+module simple_bank
 
 go 1.18
 
 require (
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.9.0
-	github.com/techschool/simplebank v0.0.0-20240330095002-931b0d981595
 )
 
 require (
