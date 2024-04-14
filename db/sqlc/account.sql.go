@@ -124,6 +124,10 @@ type ListAccountsParams struct {
 	Offset int32  `json:"offset"`
 }
 
+// SELECT * FROM accounts
+// ORDER BY id
+// LIMIT $1
+// OFFSET $2;
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error) {
 	rows, err := q.db.QueryContext(ctx, listAccounts, arg.Owner, arg.Limit, arg.Offset)
 	if err != nil {
