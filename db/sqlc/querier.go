@@ -21,14 +21,13 @@ type Querier interface {
 	GetEntry(ctx context.Context, id int64) (Entry, error)
 	GetTransfer(ctx context.Context, id int64) (Transfer, error)
 	GetUser(ctx context.Context, username string) (User, error)
+	// SELECT * FROM accounts
+	// ORDER BY id
+	// LIMIT $1
+	// OFFSET $2;
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
-	// SELECT * FROM accounts
-	// WHERE owner = $1
-	// ORDER BY id
-	// LIMIT $2
-	// OFFSET $3;
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
 	UpdateTransfer(ctx context.Context, arg UpdateTransferParams) (Transfer, error)
 }
