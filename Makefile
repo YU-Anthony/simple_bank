@@ -1,3 +1,6 @@
+network:
+	docker network create bank-network
+
 postgres:
 	docker run --name postgres --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres
 
@@ -28,4 +31,4 @@ test:
 server:
 	go run main.go
 
-.PHONY: postgres createdb dropdb migrateup migratedown migratedown1 migrateup1 sqlc test server
+.PHONY: network postgres createdb dropdb migrateup migratedown migratedown1 migrateup1 sqlc test server

@@ -6,15 +6,25 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=simple_bank
+    networks:
+      - dev-network
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    networks:
+      - dev-network
     environment: 
       - DB_SOURCE=postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable
     depends_on:
       - postgres
     entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
     command: ["/app/main"]  
+networks:
+  # Create a new Docker network.
+  dev-network:
+    driver: bridge
+  
+  
