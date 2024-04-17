@@ -12,14 +12,14 @@ import (
 )
 
 type Server struct {
-	store      *db.Store
+	store      db.Store
 	tokenMaker token.Maker
 	router     *gin.Engine
 	config     util.Config
 }
 
 // NewServer creates a new HTTP server and setup routing.
-func NewServer(config util.Config, store *db.Store) (*Server, error) {
+func NewServer(config util.Config, store db.Store) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
@@ -49,11 +49,6 @@ func (server *Server) setupRouter() {
 	authRoutes.GET("/accounts/:id", server.getAccount)
 	authRoutes.GET("accounts", server.listAccount)
 	authRoutes.POST("/transfers", server.createTransfer)
-
-	// router.POST("/accounts", server.createAccount)
-	// router.GET("/accounts/:id", server.getAccount)
-	// router.GET("accounts", server.listAccount)
-	// router.POST("/transfers", server.createTransfer)
 
 	server.router = router
 }
